@@ -17,17 +17,26 @@ if st.button("Submit"):
     if user_query.strip() == "":
         st.warning("Please enter a question.")
     else:
-        with st.spinner("Retrieving and generating answer... (first request may take 60s to wake up server)"):
+        with st.spinner("Retrieving and generating answer... (may take 60s on first request)"):
             try:
                 response = requests.post(
                     f"{BACKEND_URL}/ask",
                     json={"question": user_query},
                     timeout=120
                 )
-                result = response.json()
-                st.session_state.history.append(result)
+                
+                if response.status_code == 200 and response.text.strip():
+                    result = response.json()
+                    st.session_state.history.append(result)
+                else:
+                    st.error(f"Backend returned status {response.status_code}. Response: {response.text[:200]}")
+                    
+            except requests.exceptions.Timeout:
+                st.error("Request timed out. The backend is still waking up — please wait 30 seconds and try again.")
+            except requests.exceptions.ConnectionError:
+                st.error("Cannot connect to backend. Please try again in a moment.")
             except Exception as e:
-                st.error(f"Error connecting to backend: {e}")
+                st.error(f"Unexpected error: {e}")
 
 for i, result in enumerate(reversed(st.session_state.history)):
     st.markdown("---")
