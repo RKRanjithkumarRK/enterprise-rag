@@ -2,8 +2,7 @@ services:
   - type: web
     name: enterprise-rag-api
     runtime: python
-    # Install numpy first to control the version, then torch CPU, then everything else
-    buildCommand: "pip install numpy==1.26.4 && pip install torch==2.2.2 --index-url https://download.pytorch.org/whl/cpu && pip install -r requirements.txt"
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "python -m uvicorn src.api.app:app --host 0.0.0.0 --port 10000"
     envVars:
       - key: GROQ_API_KEY
