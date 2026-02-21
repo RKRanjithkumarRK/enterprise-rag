@@ -1,11 +1,13 @@
-cat > nixpacks.toml << 'EOF'
-[phases.build]
+[phases.setup]
+nixPkgs = ["python311"]
+
+[phases.install]
 cmds = [
-  "pip install --upgrade pip",
-  "pip install torch==2.2.2+cpu --index-url https://download.pytorch.org/whl/cpu",
-  "pip install -r requirements.txt"
+    "pip install --upgrade pip",
+    "pip install numpy==1.26.4",
+    "pip install torch==2.2.2 --index-url https://download.pytorch.org/whl/cpu",
+    "pip install -r requirements.txt"
 ]
 
-[deploy]
-startCommand = "python -m uvicorn src.api.app:app --host 0.0.0.0 --port $PORT"
-EOF
+[start]
+cmd = "python -m uvicorn src.api.app:app --host 0.0.0.0 --port $PORT"

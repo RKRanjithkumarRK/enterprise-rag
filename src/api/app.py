@@ -40,4 +40,11 @@ def ask_question(request: QueryRequest):
         result = answer_query(request.question)
         return result
     except Exception as e:
-        return {"error": str(e), "traceback": traceback.format_exc()}
+        return {"error": str(e), "traceback": traceback.format_exc()}\
+
+# At the very bottom of src/api/app.py
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    port = int(os.getenv("PORT", 10000))
+    uvicorn.run("src.api.app:app", host="0.0.0.0", port=port, reload=True)
